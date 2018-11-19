@@ -1,0 +1,266 @@
+package Window;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import Window.Game.STATE;
+
+public class MultipleChoice extends MouseAdapter {
+	int score = 0;
+	int counter = 0;
+
+	Game game;
+	Handler handler;
+	public BufferedImage level = null;
+
+	public MultipleChoice(Game game, Handler handler) {
+		this.game = game;
+		this.handler = handler;
+	}
+
+	public void mousePressed(MouseEvent e) {
+
+		int mouseX = e.getX(); // it finds the position of x when clicking the mouse
+		int mouseY = e.getY(); // it finds the position of y when clicking the mouse
+
+		if (game.state == STATE.MULTIPLECHOICE) {// when answered correctly and the correct answers for counter +1
+			if ((mouseOver(mouseX, mouseY, Game.WIDTH / 2 - 150, 170, 300, 82)) && (counter == 2)) { // when clicking
+																										// "A"
+				// 3rd question is A
+				game.state = STATE.CORRECT;
+				score++;
+
+			}
+			if ((mouseOver(mouseX, mouseY, Game.WIDTH / 2 - 150, 300, 300, 82)) && ((counter == 3) || (counter == 4))) { // When
+																															// B
+				// 4rd and 5th questions are B
+
+				game.state = STATE.CORRECT;
+				score++;
+			}
+
+			if ((mouseOver(mouseX, mouseY, Game.WIDTH / 2 - 150, 430, 300, 82)) && ((counter == 0) || (counter == 1))) { // When
+																															// C
+				// 1st and 2nd questions are C
+
+				game.state = STATE.CORRECT;
+				score++;
+			}
+
+		}
+
+		if (game.state == STATE.MULTIPLECHOICE) { // when it is answered wrong and wrong answers
+			if ((mouseOver(mouseX, mouseY, Game.WIDTH / 2 - 150, 170, 300, 82))
+					&& ((counter == 0) || (counter == 1) || (counter == 3) || (counter == 4))) { // when clicking "A"
+				game.state = STATE.FALSE;
+
+			}
+			if ((mouseOver(mouseX, mouseY, Game.WIDTH / 2 - 150, 300, 300, 82))
+					&& ((counter == 0) || (counter == 1) || (counter == 2))) { // When clicking "B",
+				game.state = STATE.FALSE;
+			}
+
+			if ((mouseOver(mouseX, mouseY, Game.WIDTH / 2 - 150, 430, 300, 82))
+					&& ((counter == 2) || (counter == 3) || (counter == 4))) { // When clicking "C"
+				game.state = STATE.FALSE;
+
+			}
+		}
+
+		if (game.state == STATE.CORRECT) { // location of pressing for the next question after each question
+			if (mouseOver(mouseX, mouseY, Game.WIDTH / 2 - 10, 500, 300, 82)) {
+				game.state = STATE.MULTIPLECHOICE;
+				counter++;
+			}
+
+		}
+		if (game.state == STATE.FALSE) {
+			if (mouseOver(mouseX, mouseY, Game.WIDTH / 2 - 10, 500, 300, 82)) {
+				game.state = STATE.MULTIPLECHOICE;
+				counter++;
+
+			}
+
+		}
+
+	}
+
+	private boolean mouseOver(int mouseX, int mouseY, int x, int y, int width, int height) { // checks whether our mouse
+																								// coordinates is in the
+																								// same area as the
+																								// buttons
+		if (mouseX > x && mouseX < x + width) {
+			if (mouseY > y && mouseY < y + height) {
+				return true; // when clicking the mouse, the x and y value are both within the button's
+								// boundaries, and you will open up the button that you click on
+			} else
+				return false; // when clicking the mouse, the x value is inside the button's left and right
+								// boundaries. However the y value is not - and nothing will happen
+		} else
+			return false; // when clicking the mouse, if the x value is not within the button's left and
+							// right boundaries, nothing will happen
+	}
+
+	public void mouseReleased(MouseEvent e) {
+
+	}
+
+	public void tick() {
+
+	}
+
+	public Rectangle AButton = new Rectangle(Game.WIDTH / 2 - 150, 170, 300, 82); // placement and size of button A
+																					// (without text)
+	public Rectangle BButton = new Rectangle(Game.WIDTH / 2 - 150, 300, 300, 82); // placement and size of
+																					// button B (without text)
+	public Rectangle CButton = new Rectangle(Game.WIDTH / 2 - 150, 430, 300, 82); // placement and size of button C
+																					// (without text)
+	public Rectangle NextButton = new Rectangle(Game.WIDTH / 2 - 10, 500, 300, 82); // placement and size of button Next
+																					// Question
+																					// (without text)
+
+	public void render(Graphics g) {
+		Graphics2D g2d = (Graphics2D) g;
+		Font hudMenu1 = new Font("gtubh", Font.ITALIC, 18); // title font
+		Font hudMenu2 = new Font("gtubh", Font.ITALIC, 25); // subtitle/menu font
+
+		if (game.state == STATE.MULTIPLECHOICE && counter == 0) {
+
+			g.setFont(hudMenu1); // we use this font
+			g.setColor(Color.WHITE); // color of text
+
+			String q1line1 = ("How long has the paty “Venstre” existed?");
+
+			g.drawString(q1line1, Game.WIDTH / 2 - 350, 30); // drawing the title
+
+			g2d.draw(AButton); // draws the button A
+			g2d.draw(BButton); // draws the button B
+			g2d.draw(CButton); // draws the button C
+
+			g.setFont(hudMenu2); // we use this font
+			g.drawString("A: 50 years", Game.WIDTH / 2 - 140, 220); // drawing the A text
+			g.drawString("B: 100 years", Game.WIDTH / 2 - 140, 350); // drawing the B text
+			g.drawString("C: above 100 years", Game.WIDTH / 2 - 140, 480); // drawing the C text
+
+		}
+
+		if (game.state == STATE.MULTIPLECHOICE && counter == 1) {
+
+			g.setFont(hudMenu1); // we use this font
+			g.setColor(Color.WHITE); // color of text
+
+			String q2line1 = ("Which ideology is “Venstres” based on?");
+
+			// String q1line2 = "question continued";
+
+			g.drawString(q2line1, Game.WIDTH / 2 - 350, 30); // drawing the title
+			// g.drawString(q1line2, Game.WIDTH / 2 - 350, 60); // drawing the title
+
+			g2d.draw(AButton); // draws the button A
+			g2d.draw(BButton); // draws the button B
+			g2d.draw(CButton); // draws the button C
+
+			g.setFont(hudMenu2); // we use this font
+			g.drawString("A: Socialism", Game.WIDTH / 2 - 140, 220); // drawing the A text
+			g.drawString("B: Conservatism", Game.WIDTH / 2 - 140, 350); // drawing the B text
+			g.drawString("C: Liberalism", Game.WIDTH / 2 - 140, 480); // drawing the C text
+
+		}
+
+		if (game.state == STATE.MULTIPLECHOICE && counter == 2) {
+
+			g.setFont(hudMenu1); // we use this font
+			g.setColor(Color.WHITE); // color of text
+
+			String q3line1 = (" What is liberalism?");
+
+			g.drawString(q3line1, Game.WIDTH / 2 - 350, 30); // drawing the title
+
+			g2d.draw(AButton); // draws the button A
+			g2d.draw(BButton); // draws the button B
+			g2d.draw(CButton); // draws the button C
+
+			g.setFont(hudMenu2); // we use this font
+
+			g.drawString("A: Human freedom in relation to the state", Game.WIDTH / 2 - 140, 220); // drawing the A text
+			g.drawString("B: The state plays a central role for the human", Game.WIDTH / 2 - 140, 350); // drawing the B
+																										// // text
+			g.drawString("C: The state must take care of the weakest", Game.WIDTH / 2 - 140, 480); // drawing the C text
+
+		}
+
+		if (game.state == STATE.MULTIPLECHOICE && counter == 3) {
+
+			g.setFont(hudMenu1); // we use this font
+			g.setColor(Color.WHITE); // color of text
+
+			String q4line1 = (" Which year will  “Venstre” abolish new diesel cars?");
+
+			// String q1line2 = "question";
+
+			g.drawString(q4line1, Game.WIDTH / 2 - 350, 30); // drawing the title
+
+			g2d.draw(AButton); // draws the button A
+			g2d.draw(BButton); // draws the button B
+			g2d.draw(CButton); // draws the button C
+
+			g.setFont(hudMenu2); // we use this font
+			g.drawString("A: 2025", Game.WIDTH / 2 - 140, 220); // drawing the A text
+			g.drawString("B: 2030", Game.WIDTH / 2 - 140, 350); // drawing the B text
+			g.drawString("C: 2035", Game.WIDTH / 2 - 140, 480); // drawing the C text
+
+		}
+		if (game.state == STATE.MULTIPLECHOICE && counter == 4) {
+
+			g.setFont(hudMenu1); // we use this font
+			g.setColor(Color.WHITE); // color of text
+
+			String q5line1 = ("What is “Venstres” slogan?");
+
+			g.drawString(q5line1, Game.WIDTH / 2 - 350, 30); // drawing the title
+
+			g2d.draw(AButton); // draws the button A
+			g2d.draw(BButton); // draws the button B
+			g2d.draw(CButton); // draws the button C
+
+			g.setFont(hudMenu2); // we use this font
+			g.drawString("A: less work hours", Game.WIDTH / 2 - 140, 220); // drawing the A text
+			g.drawString("B: it has to pay off to work", Game.WIDTH / 2 - 140, 350); // drawing the B text
+			g.drawString("C: higher salary is the key to welfare", Game.WIDTH / 2 - 140, 480); // drawing the C text
+
+		}
+
+		else if (game.state == STATE.CORRECT) { // when it is answered correct
+
+			g.setColor(Color.GREEN); // color of text
+
+			String correct = "HOOORAY, your score is " + score + " now next question:";
+
+			g.drawString(correct, Game.WIDTH / 2 - 350, 30); // drawing the title
+
+			g2d.draw(NextButton); // draws the next button
+
+			g.drawString("Next Question", Game.WIDTH / 2 - 0, 550); // drawing the next question text
+
+		} else if (game.state == STATE.FALSE) { // when it is answered false
+
+			Font hudMenu3 = new Font("gtubh", Font.ITALIC, 18); // title font
+			g.setFont(hudMenu3); // we use this font
+			g.setColor(Color.RED); // color of text
+
+			String notCorrect = "OH NO your score is " + score + " try the next question:";
+
+			g.drawString(notCorrect, Game.WIDTH / 2 - 350, 30); // drawing the title
+
+			g2d.draw(NextButton); // draws the next button
+
+			g.drawString("Next Question", Game.WIDTH / 2 - 0, 550); // drawing the next question text
+
+		}
+	}
+}
