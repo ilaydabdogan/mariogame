@@ -8,6 +8,13 @@ import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
 import Window.Game.STATE;
 
 public class MultipleChoice extends MouseAdapter {
@@ -246,6 +253,24 @@ public class MultipleChoice extends MouseAdapter {
 			g2d.draw(NextButton); // draws the next button
 
 			g.drawString("Next Question", Game.WIDTH / 2 - 0, 550); // drawing the next question text
+			
+			
+			//audio part, if it is correct it will play the audio, only type wav
+			try {
+				AudioInputStream ais = AudioSystem.getAudioInputStream(new File("/Users/ilaydabuyukdogan/eclipse-workspace/marioP1/src/Music/correct.wav"));
+				
+				Clip clip = AudioSystem.getClip();
+				clip.open(ais);
+				
+				clip.start();
+				for (int i=0; i<300000; i++) //plays the sound for this amount of time
+					System.out.println("");
+				
+			}
+			catch (UnsupportedAudioFileException e1) { }
+			catch(Exception e) {e.printStackTrace();
+
+			}
 
 		} else if (game.state == STATE.FALSE) { // when it is answered false
 
